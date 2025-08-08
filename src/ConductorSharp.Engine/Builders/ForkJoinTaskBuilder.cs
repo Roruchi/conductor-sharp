@@ -5,6 +5,7 @@ using ConductorSharp.Client.Generated;
 using ConductorSharp.Engine.Interface;
 using ConductorSharp.Engine.Model;
 using ConductorSharp.Engine.Util.Builders;
+using Newtonsoft.Json.Linq;
 
 namespace ConductorSharp.Engine.Builders
 {
@@ -34,20 +35,9 @@ namespace ConductorSharp.Engine.Builders
             // Extract forkTasks and joinOn from the input parameters
             var inputParametersDict = _inputParameters.ToObject<IDictionary<string, object>>();
 
-            // Convert the anonymous objects to proper WorkflowTask objects
-            ICollection<ICollection<WorkflowTask>> forkTasks = null;
-            ICollection<string> joinOn = null;
-
-            if (inputParametersDict?.ContainsKey("forkTasks") == true)
-            {
-                var forkTasksJson = _inputParameters["forkTasks"];
-                forkTasks = forkTasksJson?.ToObject<ICollection<ICollection<WorkflowTask>>>();
-            }
-
-            if (inputParametersDict?.ContainsKey("joinOn") == true)
-            {
-                joinOn = _inputParameters["joinOn"]?.ToObject<ICollection<string>>();
-            }
+            // Access the correct snake_case property names
+            var forkTasks = _inputParameters["fork_tasks"]?.ToObject<ICollection<ICollection<WorkflowTask>>>();
+            var joinOn = _inputParameters["join_on"]?.ToObject<ICollection<string>>();
 
             return
             [

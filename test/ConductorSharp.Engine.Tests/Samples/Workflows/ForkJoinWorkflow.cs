@@ -1,4 +1,7 @@
-﻿namespace ConductorSharp.Engine.Tests.Samples.Workflows
+﻿using System.Collections.Generic;
+using ConductorSharp.Client.Generated;
+
+namespace ConductorSharp.Engine.Tests.Samples.Workflows
 {
     public class ForkJoinWorkflowInput : WorkflowInput<ForkJoinWorkflowOutput>
     {
@@ -25,26 +28,28 @@
                 wf =>
                     new ForkJoinInput()
                     {
-                        ForkTasks = new object[]
+                        ForkTasks = new[]
                         {
-                            new object[]
+                            new WorkflowTask[]
                             {
-                                new
+                                new()
                                 {
-                                    name = "get_customer_task",
-                                    taskReferenceName = "get_customer_ref",
-                                    type = "SIMPLE",
-                                    inputParameters = new { customerId = wf.WorkflowInput.CustomerId }
+                                    Name = "get_customer_task",
+                                    TaskReferenceName = "get_customer_ref",
+                                    Type = "SIMPLE",
+                                    WorkflowTaskType = WorkflowTaskType.SIMPLE,
+                                    InputParameters = new Dictionary<string, object> { { "customerId", wf.WorkflowInput.CustomerId } }
                                 }
                             },
-                            new object[]
+                            new WorkflowTask[]
                             {
-                                new
+                                new()
                                 {
-                                    name = "prepare_email_task",
-                                    taskReferenceName = "prepare_email_ref",
-                                    type = "SIMPLE",
-                                    inputParameters = new { templateId = "welcome" }
+                                    Name = "prepare_email_task",
+                                    TaskReferenceName = "prepare_email_ref",
+                                    Type = "SIMPLE",
+                                    WorkflowTaskType = WorkflowTaskType.SIMPLE,
+                                    InputParameters = new Dictionary<string, object> { { "templateId", "welcome" } }
                                 }
                             }
                         },

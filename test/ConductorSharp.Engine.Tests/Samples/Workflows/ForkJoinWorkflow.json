@@ -5,37 +5,16 @@
     {
       "name": "FORK_fork_join_task",
       "taskReferenceName": "FORK_fork_join_task",
-      "forkTasks": [
-        [
-          {
-            "name": "get_customer_task",
-            "taskReferenceName": "get_customer_ref",
-            "type": "SIMPLE",
-            "inputParameters": {
-              "customerId": "${workflow.input.customerId}"
-            }
-          }
-        ],
-        [
-          {
-            "name": "prepare_email_task",
-            "taskReferenceName": "prepare_email_ref",
-            "type": "SIMPLE",
-            "inputParameters": {
-              "templateId": "welcome"
-            }
-          }
-        ]
-      ],
       "inputParameters": {
-        "forkTasks": [
+        "fork_tasks": [
           [
             {
               "name": "get_customer_task",
               "taskReferenceName": "get_customer_ref",
               "type": "SIMPLE",
+              "workflowTaskType": "SIMPLE",
               "inputParameters": {
-                "customerId": "${workflow.input.customerId}"
+                "customerId": "${workflow.input.customer_id}"
               }
             }
           ],
@@ -44,33 +23,59 @@
               "name": "prepare_email_task",
               "taskReferenceName": "prepare_email_ref",
               "type": "SIMPLE",
+              "workflowTaskType": "SIMPLE",
               "inputParameters": {
                 "templateId": "welcome"
               }
             }
           ]
         ],
-        "joinOn": [
+        "join_on": [
           "get_customer_ref",
           "prepare_email_ref"
         ]
       },
       "type": "FORK_JOIN",
+      "forkTasks": [
+        [
+          {
+            "name": "get_customer_task",
+            "taskReferenceName": "get_customer_ref",
+            "inputParameters": {
+              "customerId": "${workflow.input.customer_id}"
+            },
+            "type": "SIMPLE",
+            "workflowTaskType": "SIMPLE"
+          }
+        ],
+        [
+          {
+            "name": "prepare_email_task",
+            "taskReferenceName": "prepare_email_ref",
+            "inputParameters": {
+              "templateId": "welcome"
+            },
+            "type": "SIMPLE",
+            "workflowTaskType": "SIMPLE"
+          }
+        ]
+      ],
+      "optional": false,
       "workflowTaskType": "FORK_JOIN"
     },
     {
       "name": "JOIN_fork_join_task",
       "taskReferenceName": "JOIN_fork_join_task",
+      "type": "JOIN",
       "joinOn": [
         "get_customer_ref",
         "prepare_email_ref"
       ],
-      "type": "JOIN",
       "workflowTaskType": "JOIN"
     }
   ],
   "inputParameters": [
-    "customerId"
+    "customer_id"
   ],
   "outputParameters": {},
   "schemaVersion": 2,
