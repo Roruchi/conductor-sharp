@@ -1,3 +1,4 @@
+using System.Linq;
 using ConductorSharp.Client.Generated;
 using ConductorSharp.Engine.Exceptions;
 using ConductorSharp.Engine.Extensions;
@@ -5,6 +6,7 @@ using ConductorSharp.Engine.Tests.Samples.Workflows;
 using ConductorSharp.Engine.Tests.Util;
 using ConductorSharp.Patterns.Extensions;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace ConductorSharp.Engine.Tests.Integration
 {
@@ -302,6 +304,32 @@ namespace ConductorSharp.Engine.Tests.Integration
             var expectedDefinition = EmbeddedFileHelper.GetLinesFromEmbeddedFile("~/Samples/Workflows/ForkJoinWorkflow.json");
 
             Assert.Equal(expectedDefinition, definition);
+        }
+
+        [Fact]
+        public void BuilderReturnsCorrectDefinitionForkBuilderWorkflow()
+        {
+            var definition = GetDefinitionFromWorkflow<ForkBuilderWorkflow>();
+
+            // Parse the definition to verify structure
+            var workflow = JsonConvert.DeserializeObject<WorkflowDef>(definition);
+
+            // Verify we have the expected number of tasks (FORK + JOIN)
+            Assert.Equal(2, workflow.Tasks.Count);
+
+            // Verify FORK task
+            var forkTask = workflow.Tasks.First();
+            Assert.Equal("FORK_parallel_tasks", forkTask.Name);
+            Assert.Equal("FORK_JOIN", forkTask.Type);
+            Assert.NotNull(forkTask.ForkTasks);
+            Assert.Equal(2, forkTask.ForkTasks.Count); // Two branches
+
+            // Verify JOIN task
+            var joinTask = workflow.Tasks.Last();
+            Assert.Equal("JOIN_parallel_tasks", joinTask.Name);
+            Assert.Equal("JOIN", joinTask.Type);
+            Assert.NotNull(joinTask.JoinOn);
+            Assert.Equal(2, joinTask.JoinOn.Count); // Joining on two tasks
         }
 
         private static string GetDefinitionFromWorkflow<TWorkflow>()
