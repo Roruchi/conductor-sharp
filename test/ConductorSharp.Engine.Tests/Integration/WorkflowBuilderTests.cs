@@ -295,6 +295,15 @@ namespace ConductorSharp.Engine.Tests.Integration
             Assert.Equal(expectedDefinition, definition);
         }
 
+        [Fact]
+        public void BuilderReturnsCorrectDefinitionForkJoinWorkflow()
+        {
+            var definition = GetDefinitionFromWorkflow<ForkJoinWorkflow>();
+            var expectedDefinition = EmbeddedFileHelper.GetLinesFromEmbeddedFile("~/Samples/Workflows/ForkJoinWorkflow.json");
+
+            Assert.Equal(expectedDefinition, definition);
+        }
+
         private static string GetDefinitionFromWorkflow<TWorkflow>()
             where TWorkflow : IConfigurableWorkflow
         {

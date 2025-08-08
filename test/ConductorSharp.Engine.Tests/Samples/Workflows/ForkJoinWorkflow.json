@@ -1,0 +1,78 @@
+{
+  "name": "fork_join_workflow",
+  "version": 1,
+  "tasks": [
+    {
+      "name": "FORK_fork_join_task",
+      "taskReferenceName": "FORK_fork_join_task",
+      "forkTasks": [
+        [
+          {
+            "name": "get_customer_task",
+            "taskReferenceName": "get_customer_ref",
+            "type": "SIMPLE",
+            "inputParameters": {
+              "customerId": "${workflow.input.customerId}"
+            }
+          }
+        ],
+        [
+          {
+            "name": "prepare_email_task",
+            "taskReferenceName": "prepare_email_ref",
+            "type": "SIMPLE",
+            "inputParameters": {
+              "templateId": "welcome"
+            }
+          }
+        ]
+      ],
+      "inputParameters": {
+        "forkTasks": [
+          [
+            {
+              "name": "get_customer_task",
+              "taskReferenceName": "get_customer_ref",
+              "type": "SIMPLE",
+              "inputParameters": {
+                "customerId": "${workflow.input.customerId}"
+              }
+            }
+          ],
+          [
+            {
+              "name": "prepare_email_task",
+              "taskReferenceName": "prepare_email_ref",
+              "type": "SIMPLE",
+              "inputParameters": {
+                "templateId": "welcome"
+              }
+            }
+          ]
+        ],
+        "joinOn": [
+          "get_customer_ref",
+          "prepare_email_ref"
+        ]
+      },
+      "type": "FORK_JOIN",
+      "workflowTaskType": "FORK_JOIN"
+    },
+    {
+      "name": "JOIN_fork_join_task",
+      "taskReferenceName": "JOIN_fork_join_task",
+      "joinOn": [
+        "get_customer_ref",
+        "prepare_email_ref"
+      ],
+      "type": "JOIN",
+      "workflowTaskType": "JOIN"
+    }
+  ],
+  "inputParameters": [
+    "customerId"
+  ],
+  "outputParameters": {},
+  "schemaVersion": 2,
+  "timeoutSeconds": 0
+}
