@@ -88,6 +88,9 @@ namespace ConductorSharp.Engine.Builders
             // Build fork tasks from all branches
             var forkTasks = _branches.Select(branch => branch.BuildBranch()).ToArray();
 
+            // Create input parameters for compatibility with original format
+            var inputParameters = new Dictionary<string, object> { { "fork_tasks", forkTasks }, { "join_on", _joinOnTasks.ToArray() } };
+
             return new[]
             {
                 new WorkflowTask
@@ -97,6 +100,7 @@ namespace ConductorSharp.Engine.Builders
                     WorkflowTaskType = WorkflowTaskType.FORK_JOIN,
                     Type = WorkflowTaskType.FORK_JOIN.ToString(),
                     ForkTasks = forkTasks,
+                    InputParameters = inputParameters,
                     Optional = _additionalParameters?.Optional == true
                 },
                 new WorkflowTask
