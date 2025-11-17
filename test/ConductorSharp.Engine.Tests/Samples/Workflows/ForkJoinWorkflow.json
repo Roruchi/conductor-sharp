@@ -1,0 +1,83 @@
+{
+  "name": "fork_join_workflow",
+  "version": 1,
+  "tasks": [
+    {
+      "name": "FORK_fork_join_task",
+      "taskReferenceName": "FORK_fork_join_task",
+      "inputParameters": {
+        "fork_tasks": [
+          [
+            {
+              "name": "get_customer_task",
+              "taskReferenceName": "get_customer_ref",
+              "type": "SIMPLE",
+              "workflowTaskType": "SIMPLE",
+              "inputParameters": {
+                "customerId": "${workflow.input.customer_id}"
+              }
+            }
+          ],
+          [
+            {
+              "name": "prepare_email_task",
+              "taskReferenceName": "prepare_email_ref",
+              "type": "SIMPLE",
+              "workflowTaskType": "SIMPLE",
+              "inputParameters": {
+                "templateId": "welcome"
+              }
+            }
+          ]
+        ],
+        "join_on": [
+          "get_customer_ref",
+          "prepare_email_ref"
+        ]
+      },
+      "type": "FORK_JOIN",
+      "forkTasks": [
+        [
+          {
+            "name": "get_customer_task",
+            "taskReferenceName": "get_customer_ref",
+            "inputParameters": {
+              "customerId": "${workflow.input.customer_id}"
+            },
+            "type": "SIMPLE",
+            "workflowTaskType": "SIMPLE"
+          }
+        ],
+        [
+          {
+            "name": "prepare_email_task",
+            "taskReferenceName": "prepare_email_ref",
+            "inputParameters": {
+              "templateId": "welcome"
+            },
+            "type": "SIMPLE",
+            "workflowTaskType": "SIMPLE"
+          }
+        ]
+      ],
+      "optional": false,
+      "workflowTaskType": "FORK_JOIN"
+    },
+    {
+      "name": "JOIN_fork_join_task",
+      "taskReferenceName": "JOIN_fork_join_task",
+      "type": "JOIN",
+      "joinOn": [
+        "get_customer_ref",
+        "prepare_email_ref"
+      ],
+      "workflowTaskType": "JOIN"
+    }
+  ],
+  "inputParameters": [
+    "customer_id"
+  ],
+  "outputParameters": {},
+  "schemaVersion": 2,
+  "timeoutSeconds": 0
+}
